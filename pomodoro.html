@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>مؤقت بومودورو</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      text-align: center;
+      font-family: 'Cairo', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .timer-container {
+      margin-top: 50px;
+    }
+
+    #timer {
+      font-size: 100px; /* تكبير الأرقام */
+      margin: 30px 0;
+      color: #2c3e50;
+    }
+
+    .controls button {
+      font-size: 22px;
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .controls button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⏱️ مؤقت بومودورو</h1>
+    <p>ركز 25 دقيقة وخد راحة 5 دقايق!</p>
+  </header>
+
+  <div class="timer-container">
+    <div id="timer">25:00</div>
+    <div class="controls">
+      <button onclick="startTimer()">ابدأ</button>
+      <button onclick="resetTimer()">إعادة</button>
+    </div>
+  </div>
+
+  <!-- ملف صوت -->
+  <audio id="alarmSound" src="https://www.soundjay.com/button/beep-07.mp3" preload="auto"></audio>
+
+  <script>
+    let duration = 25 * 60;
+    let timerInterval;
+    let timeLeft = duration;
+    const timerDisplay = document.getElementById('timer');
+    const alarm = document.getElementById('alarmSound');
+
+    function updateDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerDisplay.textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alarm.play(); // تشغيل صوت التنبيه
+          alert("انتهت الجلسة! خد راحة 🧘");
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timeLeft = duration;
+      updateDisplay();
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>

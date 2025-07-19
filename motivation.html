@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>💡 التحفيز</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f0f8ff;
+    }
+
+    #quote {
+      font-size: 40px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #2c3e50;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💡 عبارات تحفيزية</h1>
+    <p>ابدأ يومك بطاقة إيجابية!</p>
+  </header>
+
+  <div id="quote">💪 النجاح مش صدفة، النجاح قرار</div>
+
+  <div class="buttons">
+    <button onclick="prevQuote()">السابق</button>
+    <button onclick="nextQuote()">التالي</button>
+  </div>
+
+  <script>
+    const quotes = [
+      "💪 النجاح مش صدفة، النجاح قرار",
+      "🚀 كل يوم فرصة جديدة تبني فيها حلمك",
+      "📚 العلم سلاحك.. ذاكر علشان مستقبلك",
+      "🔥 اللي بيتعب النهارده.. بيحقق حلمه بكرة",
+      "🧠 العقل زي العضلة، كل ما تستخدمه يقوى أكتر",
+      "🌟 خليك مؤمن بنفسك.. دي أول خطوة للنجاح"
+    ];
+
+    let index = 0;
+
+    function showQuote() {
+      document.getElementById('quote').textContent = quotes[index];
+    }
+
+    function nextQuote() {
+      index = (index + 1) % quotes.length;
+      showQuote();
+    }
+
+    function prevQuote() {
+      index = (index - 1 + quotes.length) % quotes.length;
+      showQuote();
+    }
+  </script>
+
+</body>
+</html>

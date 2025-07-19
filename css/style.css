@@ -1,0 +1,97 @@
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #cae6aa;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+header {
+  background-color: #4d020c;
+  color: rgb(145, 255, 0);
+  padding: 20px 0;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5em;
+}
+
+header p {
+  margin-top: 10px;
+  font-size: 1.2em;
+}
+
+.sections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 30px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.section-card {
+  background-color: rgb(0, 255, 221);
+  border-radius: 12px;
+  padding: 20px;
+  font-size: 1.1em;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.section-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  background-color: #e0d4f7;
+  color: #4b0082;
+  font-weight: bold;
+}
+.grades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+.grades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.grade-card {
+  background-color: #df0914;
+  color: #333;
+  border: 2px solid #4b0082;
+  border-radius: 15px;
+  padding: 20px;
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.grade-card:hover {
+  background-color: #4b0082;
+  color: white;
+  transform: scale(1.05);
+}
+footer {
+  background-color: #4b0082;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  margin-top: 50px;
+  border-top: 3px solid #ccc;
+}
