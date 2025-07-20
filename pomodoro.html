@@ -1,100 +1,186 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>مؤقت بومودورو</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مؤقت بومودورو - المبدع</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
   <style>
     body {
-      text-align: center;
       font-family: 'Cairo', sans-serif;
-      background-color: #f9f9f9;
+      text-align: center;
+      background: linear-gradient(to right, #8EC5FC, #E0C3FC);
+      color: #333;
+      margin: 0;
+      padding: 0;
     }
-
-    .timer-container {
-      margin-top: 50px;
+    header {
+      padding: 20px;
+      background-color: #6a11cb;
+      color: white;
     }
-
-    #timer {
-      font-size: 100px; /* تكبير الأرقام */
+    .timer {
+      font-size: 80px;
       margin: 30px 0;
-      color: #2c3e50;
     }
-
     .controls button {
-      font-size: 22px;
-      padding: 12px 24px;
       margin: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
     }
-
-    .controls button:hover {
-      background-color: #45a049;
+    .start { background-color: #4CAF50; color: white; }
+    .pause { background-color: #2196F3; color: white; }
+    .reset { background-color: #f44336; color: white; }
+    .session-type {
+      font-size: 24px;
+      margin: 15px;
+    }
+    .stats, .quote {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+    .custom-time {
+      margin-top: 20px;
+    }
+    .custom-time input {
+      width: 60px;
+      padding: 5px;
+      text-align: center;
+    }
+    .theme-toggle {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      cursor: pointer;
+    }
+    .dark-mode {
+      background: #121212;
+      color: #f1f1f1;
     }
   </style>
 </head>
 <body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌓</div>
   <header>
-    <h1>⏱️ مؤقت بومودورو</h1>
-    <p>ركز 25 دقيقة وخد راحة 5 دقايق!</p>
+    <h1>⏳ مؤقت بومودورو الاحترافي</h1>
+    <p>نظّم وقتك وابدأ التركيز!</p>
   </header>
 
-  <div class="timer-container">
-    <div id="timer">25:00</div>
-    <div class="controls">
-      <button onclick="startTimer()">ابدأ</button>
-      <button onclick="resetTimer()">إعادة</button>
-    </div>
+  <div class="session-type" id="sessionType">جلسة تركيز 🧠</div>
+  <div class="timer" id="timer">25:00</div>
+
+  <div class="controls">
+    <button class="start" onclick="startTimer()">ابدأ</button>
+    <button class="pause" onclick="pauseTimer()">إيقاف مؤقت</button>
+    <button class="reset" onclick="resetTimer()">إعادة</button>
   </div>
 
-  <!-- ملف صوت -->
-  <audio id="alarmSound" src="https://www.soundjay.com/button/beep-07.mp3" preload="auto"></audio>
+  <div class="custom-time">
+    <label>حدد وقت الجلسة (بالدقائق): </label>
+    <input type="number" id="customMinutes" min="1" max="60" value="25">
+    <button onclick="setCustomTime()">تعيين</button>
+  </div>
+
+  <div class="stats">
+    عدد الجلسات: <span id="sessionCount">0</span> | الوقت الإجمالي: <span id="totalTime">0</span> دقيقة
+  </div>
+
+  <div class="quote" id="quote">💡 ركز، كل دقيقة تصنع الفارق!</div>
+
+  <audio id="alarm">
+    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    let duration = 25 * 60;
-    let timerInterval;
-    let timeLeft = duration;
-    const timerDisplay = document.getElementById('timer');
-    const alarm = document.getElementById('alarmSound');
+    let time = 25 * 60;
+    let timer;
+    let isRunning = false;
+    let sessionCount = 0;
+    let totalTime = 0;
+    let isFocus = true;
 
-    function updateDisplay() {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timerDisplay.textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const timerEl = document.getElementById('timer');
+    const sessionType = document.getElementById('sessionType');
+    const sessionCountEl = document.getElementById('sessionCount');
+    const totalTimeEl = document.getElementById('totalTime');
+    const quoteEl = document.getElementById('quote');
+    const alarm = document.getElementById('alarm');
+
+    const focusQuotes = ["التركيز طريق النجاح!", "كل دقيقة تصنع فارقًا.", "أنت أقرب مما تتصور!"];
+    const breakQuotes = ["استرح قليلاً، ثم عد أقوى!", "راحة قصيرة = طاقة أكبر.", "خد نفس، وكمّل"];
+
+    function updateTimer() {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
     function startTimer() {
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          updateDisplay();
-        } else {
-          clearInterval(timerInterval);
-          alarm.play(); // تشغيل صوت التنبيه
-          alert("انتهت الجلسة! خد راحة 🧘");
-        }
-      }, 1000);
+      if (!isRunning) {
+        isRunning = true;
+        timer = setInterval(() => {
+          if (time > 0) {
+            time--;
+            updateTimer();
+          } else {
+            clearInterval(timer);
+            isRunning = false;
+            alarm.play();
+            sessionCount++;
+            totalTime += isFocus ? parseInt(document.getElementById("customMinutes").value) : 0;
+            sessionCountEl.textContent = sessionCount;
+            totalTimeEl.textContent = totalTime;
+            toggleSession();
+            startTimer();
+          }
+        }, 1000);
+      }
+    }
+
+    function pauseTimer() {
+      clearInterval(timer);
+      isRunning = false;
     }
 
     function resetTimer() {
-      clearInterval(timerInterval);
-      timeLeft = duration;
-      updateDisplay();
+      pauseTimer();
+      time = isFocus ? 25 * 60 : 5 * 60;
+      updateTimer();
     }
 
-    updateDisplay();
+    function toggleSession() {
+      isFocus = !isFocus;
+      if (isFocus) {
+        time = parseInt(document.getElementById("customMinutes").value) * 60;
+        sessionType.textContent = "جلسة تركيز 🧠";
+        document.body.style.background = "linear-gradient(to right, #8EC5FC, #E0C3FC)";
+        quoteEl.textContent = focusQuotes[Math.floor(Math.random() * focusQuotes.length)];
+      } else {
+        time = sessionCount % 4 === 0 ? 15 * 60 : 5 * 60;
+        sessionType.textContent = sessionCount % 4 === 0 ? "راحة طويلة 🛌" : "راحة قصيرة ☕";
+        document.body.style.background = "linear-gradient(to right, #FFDEE9, #B5FFFC)";
+        quoteEl.textContent = breakQuotes[Math.floor(Math.random() * breakQuotes.length)];
+      }
+      updateTimer();
+    }
+
+    function setCustomTime() {
+      const minutes = parseInt(document.getElementById("customMinutes").value);
+      if (minutes > 0 && minutes <= 60) {
+        pauseTimer();
+        time = minutes * 60;
+        updateTimer();
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    updateTimer();
   </script>
-    <footer>
-  <p> تقنية البومودورو = 25 دقيقة مذاكرة + 5 دقايق راحة
-كرر 4 مرات، وبعدها خد راحة أطول (15–30 دقيقة).
- بتزود التركيز وتقلل التوتر. <br>
-</footer>
 </body>
 </html>
