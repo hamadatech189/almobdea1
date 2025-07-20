@@ -17,7 +17,6 @@
       width: 90%;
       margin: 30px auto;
       border-collapse: collapse;
-      direction: rtl;
       background: white;
       box-shadow: 0 0 10px #ccc;
     }
@@ -39,7 +38,7 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
-      margin-top: 20px;
+      margin: 10px;
       background-color: #2980b9;
       color: white;
       border: none;
@@ -66,13 +65,16 @@
       </tr>
     </thead>
     <tbody>
-      <!-- يتم تعبئته بالـ JavaScript -->
+      <!-- يتم ملؤه عبر JavaScript -->
     </tbody>
   </table>
 
+  <button onclick="enableEditing()">✏️ تعديل الجدول</button>
   <button onclick="downloadPDF()">📥 تحميل الجدول PDF</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
   <script>
     const weekDays = ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
     const schedule = {
@@ -87,6 +89,7 @@
 
     const tbody = document.querySelector("#study-table tbody");
 
+    // إنشاء الجدول
     weekDays.forEach(day => {
       const row = document.createElement("tr");
       const dayCell = document.createElement("td");
@@ -102,6 +105,19 @@
       tbody.appendChild(row);
     });
 
+    // تمكين التعديل على الجدول
+    function enableEditing() {
+      const cells = document.querySelectorAll("#study-table td");
+      cells.forEach((cell, index) => {
+        // ماعدا العمود الأول (أسماء الأيام)
+        if (index % 5 !== 0) {
+          cell.contentEditable = true;
+          cell.style.backgroundColor = "#fffdd0"; // لون مميز للتعديل
+        }
+      });
+      alert("الآن يمكنك تعديل الجدول ✏️");
+    }
+
     // تحميل PDF
     async function downloadPDF() {
       const { jsPDF } = window.jspdf;
@@ -111,11 +127,13 @@
       doc.text("📚 جدول المذاكرة الأسبوعي", 140, 20, { align: "center" });
 
       const headers = [["اليوم / الوقت", "7 - 8", "8 - 9", "9 - 10", "10 - 11"]];
-      const data = weekDays.map(day => [day, ...schedule[day]]);
+      const rows = Array.from(document.querySelectorAll("#study-table tbody tr")).map(tr => {
+        return Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
+      });
 
       doc.autoTable({
         head: headers,
-        body: data,
+        body: rows,
         startY: 30,
         styles: { halign: 'center', font: 'helvetica' },
         headStyles: { fillColor: [39, 174, 96], textColor: 255 },
@@ -124,9 +142,6 @@
       doc.save("جدول_مذاكرة_أسبوعي.pdf");
     }
   </script>
-
-  <!-- مكتبة جدول PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 </body>
 </html>
