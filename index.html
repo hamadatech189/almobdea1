@@ -6,8 +6,65 @@
   <title>المبدع</title>
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* شاشة التحميل */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: radial-gradient(circle at center, #000 30%, #111 100%);
+      overflow: hidden;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-family: 'Cairo', sans-serif;
+      font-size: 2rem;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* تأثير وميض للنص */
+    #loading-text {
+      animation: blink 1s infinite;
+      text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* نجوم خلفية */
+    #loading-screen::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://i.imgur.com/3z4tOJZ.png'); /* صورة نجوم شفافة */
+      opacity: 0.2;
+      animation: moveStars 40s linear infinite;
+    }
+
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
+    }
+  </style>
 </head>
 <body>
+  <!-- شاشة التحميل -->
+  <div id="loading-screen">
+    <div id="loading-text">🚀 جاري تحميل منصة المبدع...</div>
+  </div>
+
+  <!-- محتوى الصفحة -->
   <header>
     <h1>✨ منصة المبدع ✨</h1>
     <p>ابدأ رحلتك الدراسية مع أقوى منصة تعليمية</p>
@@ -28,5 +85,14 @@
     <p>📌 تم إنشاء هذه المنصة من قِبل <strong>حماده عبدالفتاح</strong><br>
     📞 01011439841 - 01220204486</p>
   </footer>
+
+  <!-- كود إخفاء شاشة التحميل -->
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        document.getElementById("loading-screen").style.display = "none";
+      }, 6000); // 6 ثواني
+    };
+  </script>
 </body>
 </html>
