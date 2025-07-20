@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إنشاء جدول مذاكرة</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      padding: 30px;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    .form-box {
+      margin-top: 20px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .button {
+      padding: 12px 24px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📅 إنشاء جدول مذاكرة</h1>
+
+  <div class="form-box">
+    <label>عدد ساعات المذاكرة في اليوم:</label>
+    <input type="number" id="hours" placeholder="مثال: 6">
+
+    <label>عدد المواد:</label>
+    <input type="number" id="subjectCount" placeholder="مثال: 3">
+
+    <label>أسماء المواد (افصل بينهم بفاصلة):</label>
+    <input type="text" id="subjects" placeholder="مثال: فيزياء،كيمياء،أحياء">
+
+    <button class="button" onclick="generateSchedule()">إنشاء الجدول</button>
+  </div>
+
+  <div id="scheduleResult"></div>
+
+  <script>
+    function generateSchedule() {
+      const hours = parseInt(document.getElementById('hours').value);
+      const subjectCount = parseInt(document.getElementById('subjectCount').value);
+      const subjectInput = document.getElementById('subjects').value;
+
+      if (!hours || !subjectCount || !subjectInput) {
+        alert("يرجى إدخال كل البيانات.");
+        return;
+      }
+
+      const subjects = subjectInput.split('،').map(s => s.trim());
+      const hoursPerSubject = (hours / subjectCount).toFixed(2);
+
+      let tableHTML = `
+        <h2>📘 جدول مذاكرة ليوم واحد</h2>
+        <table>
+          <tr>
+            <th>المادة</th>
+            <th>عدد الساعات</th>
+          </tr>
+      `;
+
+      subjects.forEach(sub => {
+        tableHTML += `
+          <tr>
+            <td>${sub}</td>
+            <td>${hoursPerSubject} ساعة</td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `</table>`;
+      document.getElementById('scheduleResult').innerHTML = tableHTML;
+    }
+  </script>
+
+</body>
+</html>
