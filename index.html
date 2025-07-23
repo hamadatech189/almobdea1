@@ -26,7 +26,6 @@
       animation: fadeIn 1s ease-in-out;
     }
 
-    /* تأثير وميض للنص */
     #loading-text {
       animation: blink 1s infinite;
       text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
@@ -42,12 +41,11 @@
       to { opacity: 1; }
     }
 
-    /* نجوم خلفية */
     #loading-screen::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://i.imgur.com/3z4tOJZ.png'); /* صورة نجوم شفافة */
+      background: url('https://i.imgur.com/3z4tOJZ.png');
       opacity: 0.2;
       animation: moveStars 40s linear infinite;
     }
@@ -57,7 +55,6 @@
       to { background-position: 1000px 1000px; }
     }
 
-    /* زر الصفحة الرئيسية */
     #home-btn {
       position: fixed;
       top: 10px;
@@ -78,7 +75,6 @@
       background-color: #0056b3;
     }
 
-    /* معالجة عرض الشريط في التذييل ليملأ الصفحة بالكامل */
     footer {
       background-color: #4b0082;
       color: white;
@@ -91,17 +87,53 @@
       margin-top: 50px;
       border-top: 3px solid #ccc;
     }
+
+    .ai-section {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f0f0f0;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-family: 'Cairo', sans-serif;
+    }
+    .ai-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .ai-section textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    .ai-section button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      background: #4b0082;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .ai-section .response {
+      margin-top: 15px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 100px;
+    }
   </style>
 </head>
 <body>
   <a href="index.html" id="home-btn">🏠 الصفحة الرئيسية</a>
 
-  <!-- شاشة التحميل -->
   <div id="loading-screen">
     <div id="loading-text">🚀 Loading....</div>
   </div>
 
-  <!-- محتوى الصفحة -->
   <header>
     <h1>✨ منصة المبدع ✨</h1>
     <p>ابدأ رحلتك الدراسية مع أقوى منصة تعليمية</p>
@@ -118,19 +150,53 @@
     <a href="create-study-table.html" class="section-card">📅 إنشاء جدول مذاكرة </a>
   </main>
 
+  <section class="ai-section">
+    <h2>🧠 مساعد الذكاء الاصطناعي للطلاب</h2>
+    <textarea id="user-input" rows="5" placeholder="اكتب سؤالك أو الدرس هنا..."></textarea>
+    <button onclick="askAI()">➡️ إرسال</button>
+    <div id="ai-response" class="response">هنا يظهر رد الذكاء الاصطناعي...</div>
+  </section>
+
   <footer>
     <p>📌 تم إنشاء هذه المنصة من قِبل <strong>حماده عبدالفتاح</strong><br>
     📞 01011439841 - 01220204486<br>
     جميع الحقوق محفوظة لسنة 2024</p>
   </footer>
 
-  <!-- كود إخفاء شاشة التحميل -->
   <script>
     window.onload = function() {
       setTimeout(function() {
         document.getElementById("loading-screen").style.display = "none";
-      }, 4000); // 4 ثواني
+      }, 4000);
     };
+
+    async function askAI() {
+      const input = document.getElementById("user-input").value;
+      const output = document.getElementById("ai-response");
+      output.innerHTML = "جاري المعالجة...";
+
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer sk-abc...def" // استبدله بمفتاح الـ API الحقيقي
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: "أنت مساعد تعليمي ذكي للطلاب، تساعدهم في تلخيص الدروس، توليد أسئلة، تصحيح الإجابات، والإجابة على الاستفسارات الدراسية." },
+              { role: "user", content: input }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        output.innerHTML = data.choices[0].message.content;
+      } catch (err) {
+        output.innerHTML = "حدث خطأ، تأكد من مفتاح API أو الاتصال بالإنترنت.";
+      }
+    }
   </script>
 </body>
 </html>
